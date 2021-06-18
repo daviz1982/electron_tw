@@ -1,0 +1,14 @@
+{
+  "name": "twitter-electron",
+  "version": "1.0.0",
+  "description": "Electron app connecting to twitter",
+  "main": "main.js",
+  "author": "David Cruz",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^13.1.2"
+  },
+  "scripts": {
+    "start": "electron ."
+  }
+}
