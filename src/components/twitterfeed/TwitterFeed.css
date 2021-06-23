@@ -1,0 +1,18 @@
+.twitter-feed ul {
+  list-style-type: none;
+  margin: 0;
+  margin-block-start: 0;
+  padding-inline-start: 0;
+}
+
+.twitter-feed ul li {
+  padding: .25rem 1rem 1rem;
+}
+
+.twitter-feed ul li:nth-of-type(2n) {
+  background-color: #3a4353
+}
+
+.twitter-feed ul li:nth-of-type(2n-1) {
+  background-color: #2c6144
+}

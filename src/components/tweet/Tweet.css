@@ -1,0 +1,12 @@
+.tweet {
+  margin: 0;
+}
+
+.tweet a {
+  color: #fefefe;
+  font-weight: bold;
+}
+
+.tweet p {
+  white-space: pre-wrap;
+}

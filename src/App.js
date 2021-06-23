@@ -14,7 +14,6 @@ function App() {
       })
     }
   })
-  debugger
   return !!feed.value && <TwitterFeed feed={feed.value.tweets} />
 }
 

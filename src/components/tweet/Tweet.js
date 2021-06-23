@@ -1,4 +1,5 @@
 import React from 'react'
+import './Tweet.css'
 
 export const Tweet = ({ data }) => {
   const extractUrl = () => {
@@ -10,14 +11,13 @@ export const Tweet = ({ data }) => {
   }
   const { url, tweet } = extractUrl()
   return (
-    <div>
+    <div className='tweet'>
       <p>{tweet}</p>
       <span>
         <a href={url} target='_blank' rel='noreferrer'>
           Go to tweet
         </a>
       </span>
-      <hr />
     </div>
   )
 }
