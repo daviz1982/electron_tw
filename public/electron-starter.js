@@ -55,9 +55,8 @@ app.on('ready', async () => {
     const { userIds } = await getUserId({ usernames })
     userIds.forEach(async (item) => {
       const feed = await searchTweets({ userId: item })
-      // console.log(feed)
-      // mainWindow.webContents.send('message', JSON.stringify({ feed }))
       mainWindow.webContents.send('message', feed)
+      mainWindow.webContents.send('twitter-account', usernames)
     })
   } catch (e) {
     console.log(e)
