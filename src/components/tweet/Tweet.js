@@ -4,8 +4,8 @@ import './Tweet.css'
 export const Tweet = ({ data }) => {
   const extractUrl = () => {
     const txt = data.text
-    const { index } = txt.match(/https:\/\/.*$/) || txt.length
-    const url = txt.slice(index, -1)
+    const { index } = txt.match(/https:\/\/[\d\w/:.]*$/) || txt.length
+    const url = txt.slice(index)
     const tweet = txt.slice(0, index)
     return { url, tweet }
   }
