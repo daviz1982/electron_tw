@@ -1,3 +1,4 @@
+require('dotenv').config()
 const electron = require('electron')
 const needle = require('needle')
 const path = require('path')
@@ -7,16 +8,11 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
-// Hardcoding the beare token to access the API
-// Ideally this should be an environment variable
-const BEARER_TOKEN =
-  'AAAAAAAAAAAAAAAAAAAAAJg6QwEAAAAAWTVQgyde7IilzaLA98W7YeRLC5c%3DnUk1I6vpOTlNRqnpTxWl4Jsgxu1VmX2R3DuM3qjVi6ZOjoyMDz'
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-function createWindow() {
+const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -59,7 +55,7 @@ app.on('ready', async () => {
       mainWindow.webContents.send('twitter-account', usernames)
     })
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
   createWindow()
 })
@@ -88,7 +84,7 @@ const getUserId = async ({ usernames }) => {
   }
   const res = await needle('get', endpointURL, params, {
     headers: {
-      authorization: `Bearer ${BEARER_TOKEN}`,
+      authorization: `Bearer ${process.env.BEARER_TOKEN}`,
     },
   })
   if (res.body) {
@@ -106,7 +102,7 @@ const searchTweets = async ({ userId }) => {
     {},
     {
       headers: {
-        authorization: `Bearer ${BEARER_TOKEN}`,
+        authorization: `Bearer ${process.env.BEARER_TOKEN}`,
       },
     }
   )
