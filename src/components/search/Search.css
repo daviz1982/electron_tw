@@ -1,0 +1,36 @@
+.tweet {
+  text-align: center;
+  width: 100%;
+}
+
+form {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  flex: 1 1 auto;
+  font-size: 1.6rem;
+  min-width: 300px;
+}
+
+small {
+  border: 1px dotted white;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 300px;
+  padding: .5rem 0;
+  width: 50%
+}
+
+input {
+  flex: 1 1 auto;
+  font-size: 1.2rem;
+  height: 3rem;
+  margin: 1.5rem 0;
+  min-width: 300px;
+  padding: .2rem .5rem;
+  width: 50%
+}
