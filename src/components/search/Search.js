@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './Search.css'
 
 export const Search = ({ handleSubmitSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('GitKraken')
+  const [searchTerm, setSearchTerm] = useState()
 
   const handleChangeSearch = (e) => {
     setSearchTerm(e.target.value)
@@ -14,7 +14,7 @@ export const Search = ({ handleSubmitSearch }) => {
   }
 
   return (
-    <div className='tweet'>
+    <div className='searchBox'>
       <form onSubmit={handleSubmit}>
         <label htmlFor='searchfield'>Enter a topic to search</label>
         <input
@@ -24,10 +24,10 @@ export const Search = ({ handleSubmitSearch }) => {
           onChange={handleChangeSearch}
           value={searchTerm}
         />
-        <small>
+        {/* <small>
           <div>use @ to look for users</div>
           <div>use # to look for hashtags</div>
-        </small>
+        </small> */}
       </form>
     </div>
   )

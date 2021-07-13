@@ -1,0 +1,36 @@
+#loader {
+  height: 4rem;
+  position: relative;
+  width: 100%;
+}
+
+#loader::after {
+  animation: 1.2s linear infinite spin;
+  animation-play-state: inherit;
+  border: .5rem solid #cfcfcf;
+  border-bottom-color: #303030;
+  border-radius: 50%;
+  content: "";
+  height: 2rem;
+  /* margin: 1rem; */
+  position: absolute;
+  width: 2rem;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate3d(-50%, -50%, 0) rotate(0deg)
+  }
+
+  50% {
+    transform: translate3d(-50%, -50%, 0) rotate(90deg)
+  }
+
+  100% {
+    transform: translate3d(-50%, -50%, 0) rotate(360deg)
+  }
+}
