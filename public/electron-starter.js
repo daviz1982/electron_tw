@@ -86,9 +86,13 @@ const cleanLocalStorage = () => {
 electron.ipcMain.on('search', (event, arg) => {
   searchTerm = arg
   if (!!searchTerm && typeof arg === 'string') {
-    api.search([searchTerm], ({ feed, searchTerm }) => {
-      mainWindow.webContents.send('message', feed)
-      mainWindow.webContents.send('twitter-account', searchTerm)
+    api.search([searchTerm], ({ feed, searchTerm, error }) => {
+      // console.log('.....')
+      // console.log({ feed, searchTerm, error })
+      // console.log('.....')
+      !!feed && mainWindow.webContents.send('message', feed)
+      !!searchTerm && mainWindow.webContents.send('twitter-account', searchTerm)
+      !!error && mainWindow.webContents.send('error', error)
     })
   }
 })

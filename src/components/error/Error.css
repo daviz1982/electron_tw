@@ -1,0 +1,11 @@
+#error {
+  background-color: #c00000;
+  bottom: 0.5rem;
+  color: #ececec;
+  font-size: 0.8rem;
+  left: 0.5rem;
+  padding: 1rem 3rem;
+  position: absolute;
+  right: 0.5rem;
+  text-align: center;
+}

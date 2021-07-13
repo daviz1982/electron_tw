@@ -1,16 +1,21 @@
 const needle = require('needle')
 
 const search = async (searchTerm, callback) => {
+  let feed, error
   try {
+    // TODO: add logic to perform search when it's an user and when isn't
     if (searchTerm.length > 0) {
+      // console.log(searchTerm)
       const { userIds } = await getUserId({ usernames: searchTerm })
       userIds.forEach(async (item) => {
-        const feed = await searchTweets({ userId: item })
-        callback({ searchTerm, feed })
+        feed = await searchTweets({ userId: item })
+        callback({ searchTerm, feed, error })
       })
     }
   } catch (e) {
-    console.error(e)
+    // console.log({ e })
+    error = e
+    callback({ searchTerm, feed, error })
   }
 }
 
@@ -27,7 +32,10 @@ const getUserId = async ({ usernames }) => {
   if (res.body && res.body.data) {
     return { userIds: res.body.data.map((item) => item.id) }
   } else {
-    const err = `${res.body.errors[0].title}: ${res.body.errors[0].detail}`
+    // console.log(res.body)
+    const err = res.body.errors[0].message
+      ? res.body.errors[0].message
+      : `${res.body.errors[0].title}: ${res.body.errors[0].detail}`
     console.error(err)
     throw new Error(err)
   }
