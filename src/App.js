@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react'
 import isElectron from 'is-electron'
 import { TwitterFeed } from './components/twitterfeed/TwitterFeed'
+import { Search } from './components/search/Search'
 import './App.css'
-import { useLocalStorage } from './hooks/useLocalStorage'
+import { useLocalStorage, usePrevious } from './hooks'
 
-function App() {
+export const App = () => {
   const feed = useLocalStorage('feed', [])
-  const account = useLocalStorage('account', '')
+  const account = useLocalStorage('account', undefined)
+
+  const prevAccount = usePrevious(account.current)
 
   useEffect(() => {
     if (isElectron()) {
@@ -18,12 +21,27 @@ function App() {
       })
     }
   })
+
+  useEffect(() => {
+    if (isElectron()) {
+      if (account.value !== prevAccount) {
+        window.ipcRenderer.send('search', account.value)
+      }
+    }
+  }, [account, prevAccount])
+
+  const handleSubmitSearch = ({ searchTerm }) => {
+    account.set(searchTerm)
+    // TODO: add loader for feed
+  }
+
   return (
     <>
-      {!!account.value && <h1>{account.value}</h1>}
+      <header>
+        {!!account.value && <h1>{account.value}</h1>}
+        <Search handleSubmitSearch={handleSubmitSearch} />
+      </header>
       {!!feed.value && <TwitterFeed feed={feed.value.tweets} />}
     </>
   )
 }
-
-export default App

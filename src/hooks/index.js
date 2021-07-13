@@ -1,3 +1,4 @@
 import { useLocalStorage } from './useLocalStorage'
+import { usePrevious } from './usePrevious'
 
-export { useLocalStorage }
+export { useLocalStorage, usePrevious }
