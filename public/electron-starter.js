@@ -77,6 +77,7 @@ app.on('activate', () => {
 })
 
 const cleanLocalStorage = () => {
+  console.log('Cleaning...')
   electron.session.defaultSession.clearStorageData({
     storages: ['localstorage'],
   })
