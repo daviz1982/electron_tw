@@ -33,7 +33,12 @@ const createWindow = () => {
   mainWindow.loadURL('http://localhost:3000')
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
+
+  mainWindow.webContents.setWindowOpenHandler((params) => {
+    electron.shell.openExternal(params.url)
+    return { action: 'deny' }
+  })
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -51,8 +56,8 @@ const createWindow = () => {
 app.on('ready', async () => {
   if (!!searchTerm) {
     api.search([searchTerm], (feed, searchTerm) => {
-      mainWindow.webContents.send('message', feed)
-      mainWindow.webContents.send('twitter-account', searchTerm)
+      mainWindow.webContents.send('received-tweets', feed)
+      mainWindow.webContents.send('performed-query', searchTerm)
     })
   }
   createWindow()
@@ -77,7 +82,6 @@ app.on('activate', () => {
 })
 
 const cleanLocalStorage = () => {
-  console.log('Cleaning...')
   electron.session.defaultSession.clearStorageData({
     storages: ['localstorage'],
   })
@@ -86,13 +90,11 @@ const cleanLocalStorage = () => {
 electron.ipcMain.on('search', (event, arg) => {
   searchTerm = arg
   if (!!searchTerm && typeof arg === 'string') {
-    api.search([searchTerm], ({ feed, searchTerm, error }) => {
-      // console.log('.....')
-      // console.log({ feed, searchTerm, error })
-      // console.log('.....')
-      !!feed && mainWindow.webContents.send('message', feed)
-      !!searchTerm && mainWindow.webContents.send('twitter-account', searchTerm)
-      !!error && mainWindow.webContents.send('error', error)
+    api.search(searchTerm, ({ feed, userProfile, error }) => {
+      !!feed && mainWindow.webContents.send('received-tweets', feed)
+      !!userProfile &&
+        mainWindow.webContents.send('received-user-profile', userProfile)
+      !!error && mainWindow.webContents.send('received-error', error)
     })
   }
 })
