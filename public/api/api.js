@@ -1,20 +1,17 @@
 const needle = require('needle')
 
 const search = async (searchTerm, callback) => {
-  console.log('Enter search')
+  //console.log('Enter search')
   let feed, error
-  // TODO: add logic to perform search when it's an user and when isn't
   const { type } = getSearchType({ str: searchTerm })
   try {
     if (searchTerm.length > 0) {
       if (type === 'user') {
         const usernames = searchTerm.slice(1)
-        const { userIds } = await getUserId({ usernames })
-        console.log(userIds)
-        userIds.forEach(async (item) => {
-          feed = await searchTweetsByUser({ userId: item })
-          callback({ searchTerm, feed, error })
-        })
+        const userProfile = await getUserId({ usernames })
+        //console.log(userProfile)
+        feed = await searchTweetsByUser({ userId: userProfile.id })
+        callback({ userProfile, feed, error })
       } else {
         const query = searchTerm
         feed = await searchTweets({ query })
@@ -22,7 +19,7 @@ const search = async (searchTerm, callback) => {
       }
     }
   } catch (e) {
-    // console.log({ e })
+    console.error({ e })
     error = e
     callback({ searchTerm, feed, error })
   }
@@ -38,9 +35,11 @@ const getSearchType = ({ str }) => {
 }
 
 const getUserId = async ({ usernames }) => {
-  const endpointURL = 'https://api.twitter.com/2/users/by?usernames='
+  console.log('Entro en getUserId')
+  const endpointURL = 'https://api.twitter.com/2/users/by'
   const params = {
     usernames: typeof usernames === 'object' ? usernames.join(',') : usernames,
+    'user.fields': 'profile_image_url,url,name',
   }
   const res = await needle('get', endpointURL, params, {
     headers: {
@@ -48,9 +47,9 @@ const getUserId = async ({ usernames }) => {
     },
   })
   if (res.body && res.body.data) {
-    return { userIds: res.body.data.map((item) => item.id) }
+    return res.body.data[0]
   } else {
-    // console.log(res.body)
+    // //console.log(res.body)
     const err = res.body.errors[0].message
       ? res.body.errors[0].message
       : `${res.body.errors[0].title}: ${res.body.errors[0].detail}`
@@ -64,7 +63,7 @@ const searchTweetsByUser = async ({ userId }) => {
   const res = await needle(
     'get',
     endpointURL,
-    {},
+    { expansions: 'author_id' },
     {
       headers: {
         authorization: `Bearer ${process.env.BEARER_TOKEN}`,
@@ -73,6 +72,7 @@ const searchTweetsByUser = async ({ userId }) => {
   )
 
   if (res.body) {
+    //console.log(res.body.data)
     const response = {
       tweets: res.body.data,
     }
@@ -98,6 +98,7 @@ const searchTweets = async ({ query }) => {
   )
 
   if (res.body) {
+    //console.log(res.body.data)
     const response = {
       tweets: res.body.data,
     }

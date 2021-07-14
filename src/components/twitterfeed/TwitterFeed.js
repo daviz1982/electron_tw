@@ -2,14 +2,14 @@ import React from 'react'
 import { Tweet } from '../tweet/Tweet'
 import './TwitterFeed.css'
 
-export const TwitterFeed = ({ feed }) => {
+export const TwitterFeed = ({ feed, user }) => {
   return (
     <div className='twitter-feed'>
       <ul>
         {feed &&
           feed.map((item) => (
-            <li>
-              <Tweet data={item} key={item.id} />
+            <li key={item.id}>
+              <Tweet data={item} user={user} />
             </li>
           ))}
       </ul>
