@@ -39,6 +39,7 @@ export const App = () => {
   })
 
   useEffect(() => {
+    console.log('exec effect', { account, prevAccount })
     if (isElectron()) {
       if (account.value !== prevAccount) {
         //

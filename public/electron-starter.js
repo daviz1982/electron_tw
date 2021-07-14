@@ -84,9 +84,10 @@ const cleanLocalStorage = () => {
 }
 
 electron.ipcMain.on('search', (event, arg) => {
+  console.log('on search')
   searchTerm = arg
   if (!!searchTerm && typeof arg === 'string') {
-    api.search([searchTerm], ({ feed, searchTerm, error }) => {
+    api.search(searchTerm, ({ feed, searchTerm, error }) => {
       // console.log('.....')
       // console.log({ feed, searchTerm, error })
       // console.log('.....')
