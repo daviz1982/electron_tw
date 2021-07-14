@@ -22,13 +22,11 @@ export const App = () => {
   useEffect(() => {
     if (isElectron()) {
       window.ipcRenderer.on('received-tweets', (event, data) => {
-        //console.log({ 1: '~~~~~', data })
         setFeed(data)
         setLoading(false)
         setShowFeed(true)
       })
       window.ipcRenderer.on('received-user-profile', (event, data) => {
-        //console.log({ data })
         setUserProfile(data)
       })
       window.ipcRenderer.on('received-error', (event, data) => {

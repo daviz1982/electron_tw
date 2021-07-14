@@ -36,7 +36,6 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools()
 
   mainWindow.webContents.setWindowOpenHandler((params) => {
-    //console.log(params)
     electron.shell.openExternal(params.url)
     return { action: 'deny' }
   })
@@ -83,18 +82,15 @@ app.on('activate', () => {
 })
 
 const cleanLocalStorage = () => {
-  //console.log('Cleaning...')
   electron.session.defaultSession.clearStorageData({
     storages: ['localstorage'],
   })
 }
 
 electron.ipcMain.on('search', (event, arg) => {
-  //console.log('on search')
   searchTerm = arg
   if (!!searchTerm && typeof arg === 'string') {
     api.search(searchTerm, ({ feed, userProfile, error }) => {
-      //console.log(userProfile, !!userProfile)
       !!feed && mainWindow.webContents.send('received-tweets', feed)
       !!userProfile &&
         mainWindow.webContents.send('received-user-profile', userProfile)

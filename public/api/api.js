@@ -1,7 +1,6 @@
 const needle = require('needle')
 
 const search = async (searchTerm, callback) => {
-  //console.log('Enter search')
   let feed, error
   const { type } = getSearchType({ str: searchTerm })
   try {
@@ -9,7 +8,6 @@ const search = async (searchTerm, callback) => {
       if (type === 'user') {
         const usernames = searchTerm.slice(1)
         const userProfile = await getUserId({ usernames })
-        //console.log(userProfile)
         feed = await searchTweetsByUser({ userId: userProfile.id })
         callback({ userProfile, feed, error })
       } else {
@@ -35,7 +33,6 @@ const getSearchType = ({ str }) => {
 }
 
 const getUserId = async ({ usernames }) => {
-  console.log('Entro en getUserId')
   const endpointURL = 'https://api.twitter.com/2/users/by'
   const params = {
     usernames: typeof usernames === 'object' ? usernames.join(',') : usernames,
@@ -49,7 +46,6 @@ const getUserId = async ({ usernames }) => {
   if (res.body && res.body.data) {
     return res.body.data[0]
   } else {
-    // //console.log(res.body)
     const err = res.body.errors[0].message
       ? res.body.errors[0].message
       : `${res.body.errors[0].title}: ${res.body.errors[0].detail}`
@@ -72,7 +68,6 @@ const searchTweetsByUser = async ({ userId }) => {
   )
 
   if (res.body) {
-    //console.log(res.body.data)
     const response = {
       tweets: res.body.data,
     }
@@ -98,7 +93,6 @@ const searchTweets = async ({ query }) => {
   )
 
   if (res.body) {
-    //console.log(res.body.data)
     const response = {
       tweets: res.body.data,
     }
