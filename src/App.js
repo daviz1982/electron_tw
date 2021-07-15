@@ -4,34 +4,33 @@ import { TwitterFeed } from './components/twitterfeed/TwitterFeed'
 import { Search } from './components/search/Search'
 import { Loader } from './components/loader/Loader'
 import { Error } from './components/error/Error'
+import { usePrevious } from './hooks'
 import './App.css'
-import { useLocalStorage, usePrevious } from './hooks'
 
 export const App = () => {
-  const feed = useLocalStorage('feed', [])
-  const account = useLocalStorage('account', undefined)
-  const error = useLocalStorage('error', '')
-
+  const [feed, setFeed] = useState([])
+  const [query, setQuery] = useState('')
+  const [error, setError] = useState('')
   const [showSearch, setShowSearch] = useState(true)
   const [showFeed, setShowFeed] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showError, setShowError] = useState(false)
+  const [userProfile, setUserProfile] = useState()
 
-  const prevAccount = usePrevious(account.current)
+  const prevQuery = usePrevious(query)
 
   useEffect(() => {
     if (isElectron()) {
-      window.ipcRenderer.on('message', (event, data) => {
-        feed.set(data)
+      window.ipcRenderer.on('received-tweets', (event, data) => {
+        setFeed(data)
         setLoading(false)
         setShowFeed(true)
       })
-      window.ipcRenderer.on('twitter-account', (event, data) => {
-        account.set(data)
+      window.ipcRenderer.on('received-user-profile', (event, data) => {
+        setUserProfile(data)
       })
-      window.ipcRenderer.on('error', (event, data) => {
-        // console.log({ data })
-        error.set(data.message)
+      window.ipcRenderer.on('received-error', (event, data) => {
+        setError(data.message)
         setShowError(true)
         setLoading(false)
       })
@@ -41,15 +40,14 @@ export const App = () => {
   useEffect(() => {
     console.log('exec effect', { account, prevAccount })
     if (isElectron()) {
-      if (account.value !== prevAccount) {
-        //
-        window.ipcRenderer.send('search', account.value)
+      if (query !== prevQuery) {
+        window.ipcRenderer.send('search', query)
       }
     }
-  }, [account, prevAccount])
+  }, [query, prevQuery])
 
   const handleSubmitSearch = ({ searchTerm }) => {
-    account.set(searchTerm)
+    setQuery(searchTerm)
     setShowSearch(false)
     setShowFeed(false)
     setLoading(true)
@@ -69,13 +67,14 @@ export const App = () => {
       ) : (
         <>
           <button onClick={showOnlySearchBox}>&lt; search again</button>
-          <header>{!!account.value && <h1>{account.value}</h1>}</header>
+          <header>{!!query && <h1>{query}</h1>}</header>
         </>
       )}
       {loading && <Loader />}
-      {showFeed && !!feed.value && <TwitterFeed feed={feed.value.tweets} />}
-      {/* {console.log({ qqqqqq: error.value })} */}
-      {showError && <Error message={error.value} />}
+      {showFeed && !!feed && (
+        <TwitterFeed feed={feed.tweets} user={userProfile} />
+      )}
+      {showError && <Error message={error} />}
     </>
   )
 }

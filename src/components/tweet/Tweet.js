@@ -1,23 +1,23 @@
 import React from 'react'
 import './Tweet.css'
 
-export const Tweet = ({ data }) => {
+export const Tweet = ({ data, user }) => {
   const extractUrl = () => {
-    const txt = data.text
-    const { index } = txt.match(/https:\/\/[\d\w/:.]*$/) || txt.length
-    const url = txt.slice(index)
-    const tweet = txt.slice(0, index)
+    const { tweet, author_id, id } = data
+    const url = `//twitter.com/${author_id}/status/${id}`
     return { url, tweet }
   }
   const { url, tweet } = extractUrl()
   return (
     <div className='tweet'>
       <p>{tweet}</p>
-      <span>
-        <a href={url} target='_blank' rel='noreferrer'>
-          Go to tweet
-        </a>
-      </span>
+      {!!url && (
+        <span>
+          <a href={url} target='_blank' rel='noreferrer'>
+            Go to tweet
+          </a>
+        </span>
+      )}
     </div>
   )
 }
