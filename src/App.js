@@ -58,6 +58,7 @@ export const App = () => {
     setShowFeed(false)
     setLoading(false)
     setShowError(false)
+    setQuery('')
   }
 
   return (
