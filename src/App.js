@@ -4,7 +4,7 @@ import { TwitterFeed } from './components/twitterfeed/TwitterFeed'
 import { Search } from './components/search/Search'
 import { Loader } from './components/loader/Loader'
 import { Error } from './components/error/Error'
-import { usePrevious } from './hooks'
+import { usePrevious, useLocalStorage } from './hooks'
 import './App.css'
 
 export const App = () => {
@@ -16,6 +16,9 @@ export const App = () => {
   const [loading, setLoading] = useState(false)
   const [showError, setShowError] = useState(false)
   const [userProfile, setUserProfile] = useState()
+
+  const searchHistory = useLocalStorage('SEARCH_HISTORY', [])
+  const MAX_HISTORY_SEARCH_VALUES = 5
 
   const prevQuery = usePrevious(query)
 
@@ -38,7 +41,6 @@ export const App = () => {
   })
 
   useEffect(() => {
-    console.log('exec effect', { account, prevAccount })
     if (isElectron()) {
       if (query !== prevQuery) {
         window.ipcRenderer.send('search', query)
@@ -46,11 +48,24 @@ export const App = () => {
     }
   }, [query, prevQuery])
 
+  const addItemHistoricSearch = ({ term }) => {
+    let actualValue = searchHistory.value
+    if (actualValue.includes(term)) {
+      return
+    }
+    if (actualValue.length === MAX_HISTORY_SEARCH_VALUES) {
+      actualValue = actualValue.slice(1, MAX_HISTORY_SEARCH_VALUES)
+    }
+    actualValue.push(term)
+    searchHistory.set(actualValue)
+  }
+
   const handleSubmitSearch = ({ searchTerm }) => {
     setQuery(searchTerm)
     setShowSearch(false)
     setShowFeed(false)
     setLoading(true)
+    addItemHistoricSearch({ term: searchTerm })
   }
 
   const showOnlySearchBox = () => {
@@ -67,7 +82,9 @@ export const App = () => {
         <Search handleSubmitSearch={handleSubmitSearch} />
       ) : (
         <>
-          <button onClick={showOnlySearchBox}>&lt; search again</button>
+          <button className='backLink' onClick={showOnlySearchBox}>
+            ↪️ Search again
+          </button>
           <header>{!!query && <h1>{query}</h1>}</header>
         </>
       )}

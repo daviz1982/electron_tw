@@ -1,3 +1,12 @@
 header {
   text-align: center;
 }
+
+.backLink {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 0;
+  text-align: left;
+}

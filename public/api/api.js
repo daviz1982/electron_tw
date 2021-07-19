@@ -60,21 +60,21 @@ const searchTweetsByUser = async ({ userId }) => {
   const res = await needle(
     'get',
     endpointURL,
-    { expansions: 'author_id' },
+    { 'tweet.fields': 'author_id,text,id' },
     {
       headers: {
         authorization: `Bearer ${process.env.BEARER_TOKEN}`,
       },
     }
   )
-
-  if (res.body) {
+  if (res.body && res.body.data) {
     const response = {
       tweets: res.body.data,
     }
     return response
   } else {
     const err = res.body.errors[0].message
+    console.error(err)
     throw new Error(err)
   }
 }
@@ -85,15 +85,18 @@ const searchTweets = async ({ query }) => {
   const res = await needle(
     'get',
     endpointUrl,
-    { query },
+    {
+      query,
+      'tweet.fields':
+        'attachments,author_id,conversation_id,created_at,entities,id,in_reply_to_user_id,public_metrics,referenced_tweets,reply_settings,text',
+    },
     {
       headers: {
         authorization: `Bearer ${process.env.BEARER_TOKEN}`,
       },
     }
   )
-
-  if (res.body) {
+  if (res.body && res.body.data) {
     const response = {
       tweets: res.body.data,
     }

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import './Search.css'
+import { LastSearch } from '../../components/lastsearch/LastSearch'
 
 export const Search = ({ handleSubmitSearch }) => {
   const inputSearch = useRef(null)
@@ -15,9 +16,16 @@ export const Search = ({ handleSubmitSearch }) => {
     setSearchTerm(e.target.value)
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    handleSubmitSearch({ searchTerm })
+  const handleSubmit = (event = false) => {
+    if (typeof event === 'string') {
+      setSearchTerm(event)
+      handleSubmitSearch({ searchTerm: event })
+    } else {
+      if (!event.defaultPrevented) {
+        event.preventDefault()
+        handleSubmitSearch({ searchTerm })
+      }
+    }
   }
 
   return (
@@ -34,10 +42,10 @@ export const Search = ({ handleSubmitSearch }) => {
           value={searchTerm}
         />
         <small>
-          <div>use @ to look for users</div>
-          <div>use # to look for hashtags</div>
+          <div>Hint: use @ to look for users</div>
         </small>
       </form>
+      <LastSearch handleSubmit={handleSubmit} />
     </div>
   )
 }

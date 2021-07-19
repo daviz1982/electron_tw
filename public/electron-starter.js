@@ -90,7 +90,7 @@ const cleanLocalStorage = () => {
 electron.ipcMain.on('search', (event, arg) => {
   console.log('on search')
   searchTerm = arg
-  if (!!searchTerm && typeof arg === 'string') {
+  if (!!searchTerm && typeof searchTerm === 'string') {
     api.search(searchTerm, ({ feed, userProfile, error }) => {
       !!feed && mainWindow.webContents.send('received-tweets', feed)
       !!userProfile &&

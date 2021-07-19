@@ -1,0 +1,17 @@
+.list-last-searches {
+  margin-left: 25%;
+  min-width: 300px;
+  text-align: left;
+  width: 50%;
+}
+
+.list-last-searches ul {
+  list-style: none;
+  padding: 0;
+}
+
+.list-last-searches li::before {
+  content: '-';
+  cursor: pointer;
+  padding-right: 1rem;
+}
